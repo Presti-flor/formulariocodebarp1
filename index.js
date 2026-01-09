@@ -389,8 +389,121 @@ app.post("/submit", async (req, res) => {
     ]);
 
     if (r.rowCount === 0) {
-      return res.status(400).send("YA REGISTRADO (QR ya usado)");
-    }
+  return res.status(400).send(`
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Ya registrado</title>
+</head>
+<body style="
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: radial-gradient(1200px 600px at 20% 10%, rgba(245,158,11,.18), transparent 60%),
+              radial-gradient(1200px 600px at 90% 90%, rgba(248,113,113,.14), transparent 60%),
+              #fff7ed;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  padding: 18px;
+">
+
+  <div style="
+    background:#ffffff;
+    border-radius:28px;
+    box-shadow:0 22px 60px rgba(15,23,42,.22);
+    padding:32px 26px 26px;
+    max-width:560px;
+    width:100%;
+    text-align:center;
+    border: 2px solid rgba(245,158,11,.25);
+  ">
+
+    <div style="
+      width:92px;
+      height:92px;
+      margin: 0 auto 14px;
+      border-radius:50%;
+      background:#f59e0b;
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:3rem;
+      box-shadow:0 14px 30px rgba(245,158,11,.45);
+      font-weight:900;
+    ">
+      !
+    </div>
+
+    <h1 style="
+      margin: 6px 0 8px;
+      font-size: 2rem;
+      font-weight: 900;
+      color:#7c2d12;
+      letter-spacing:.03em;
+    ">
+      YA REGISTRADO
+    </h1>
+
+    <p style="
+      margin: 0 0 14px;
+      font-size: 1.05rem;
+      color:#9a3412;
+      font-weight:650;
+      line-height:1.4;
+    ">
+      Esta <strong>Etiqueta</strong> ya fue usada hoy.
+    </p>
+
+    <div style="
+      margin: 14px 0 14px;
+      text-align:left;
+      background:#fff7ed;
+      border:1px dashed rgba(245,158,11,.45);
+      padding:14px 14px;
+      border-radius:16px;
+      color:#7c2d12;
+      font-size:.98rem;
+    ">
+      
+    </div>
+
+    <div style="
+      margin-top: 10px;
+      padding: 14px 12px;
+      border-radius: 16px;
+      background: #fef3c7;
+      color:#7c2d12;
+      font-size: .95rem;
+      font-weight: 650;
+    ">
+     
+    </div>
+
+    <button onclick="history.back()" style="
+      width:100%;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 900;
+      font-size: 1rem;
+      background: #7c2d12;
+      color: white;
+      box-shadow: 0 12px 26px rgba(124,45,18,.25);
+    ">
+      Volver
+    </button>
+
+  </div>
+</body>
+</html>
+  `);
+}
 
     const variedadShow = capitalizeWords(variedad);
     const tamanoShow =
