@@ -362,7 +362,16 @@ app.post("/submit", async (req, res) => {
     return res.status(400).send("Tallos inválidos");
   }
 
-  const { variedad, tamano } = parseSeleccion(form, seleccion);
+  const parsed = parseSeleccion(form, seleccion);
+
+  const variedad = capitalizeWords(parsed.variedad);
+
+// Tamaño
+  let tamano = null;
+
+  if (form !== "nacional" && parsed.tamano) {
+  tamano = capitalizeWords(parsed.tamano);
+}
   const { tipo, serial, barcode } = makeFormBarcode(fid);
 
   try {
