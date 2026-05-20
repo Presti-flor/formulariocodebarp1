@@ -133,8 +133,9 @@ const BLOQUE_CONFIG = {
       "coral reff|ruso",
       "pink floyd|na",
       "pink floyd|ruso",
+      "mondial|na",
     ],
-    nacional: ["vendela", "coral reff", "pink floyd"],
+    nacional: ["vendela", "coral reff", "mondial", "pink floyd"],
   },
 
   "10": {
