@@ -57,6 +57,21 @@ function makeFormBarcode(fid) {
   const barcode = tipo + serial;
   return { tipo, serial, barcode };
 }
+// ================== VIAJE ACTIVO ==================
+async function obtenerViajeActivo() {
+  const r = await pool.query(`
+    SELECT valor
+    FROM sistema_estado
+    WHERE clave = 'viaje_activo'
+    LIMIT 1
+  `);
+
+  if (!r.rows.length || !r.rows[0].valor) {
+    return null;
+  }
+
+  return String(r.rows[0].valor).trim();
+}
 
 // ================== CONFIG BLOQUES ==================
 // Nacional: solo variedad (sin tamaño)
@@ -374,29 +389,51 @@ app.post("/submit", async (req, res) => {
   tamano = capitalizeWords(parsed.tamano);
 }
   const { tipo, serial, barcode } = makeFormBarcode(fid);
+  const viajeActivo = await obtenerViajeActivo();
+
+if (!viajeActivo) {
+  return res.status(400).send(`
+    <h2>No hay viaje activo ❌</h2>
+    <p>Debes activar un viaje en el panel principal antes de enviar el formulario.</p>
+    <button onclick="history.back()">Volver</button>
+  `);
+}
 
   try {
     const q = `
-      INSERT INTO registros
-      (barcode, tipo, serial, variedad, bloque, tamano, tallos, etapa, form, form_id)
-      VALUES
-      ($1,$2,$3,$4,$5::numeric,$6,$7::int,$8,$9,$10)
-      ON CONFLICT (form_id) DO NOTHING
-      RETURNING barcode;
-    `;
+  INSERT INTO registros
+  (
+    barcode,
+    tipo,
+    serial,
+    variedad,
+    bloque,
+    tamano,
+    tallos,
+    etapa,
+    form,
+    form_id,
+    viaje
+  )
+  VALUES
+  ($1,$2,$3,$4,$5::numeric,$6,$7::int,$8,$9,$10,$11)
+  ON CONFLICT (form_id) DO NOTHING
+  RETURNING barcode;
+`;
 
-    const r = await pool.query(q, [
-      barcode,
-      tipo,
-      serial,
-      variedad,
-      bloque,
-      form === "nacional" ? null : tamano,
-      tallosNum,
-      etapa || "Ingreso",
-      form,
-      fid,
-    ]);
+const r = await pool.query(q, [
+  barcode,
+  tipo,
+  serial,
+  variedad,
+  bloque,
+  form === "nacional" ? null : tamano,
+  tallosNum,
+  etapa || "Ingreso",
+  form,
+  fid,
+  viajeActivo,
+]);
 
     if (r.rowCount === 0) {
   return res.status(400).send(`
